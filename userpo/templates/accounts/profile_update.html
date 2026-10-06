@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile{% endblock %}
+
+{% block content %}
+<main class="account-shell">
+    <div class="container">
+        <div class="account-card">
+            <div class="account-header">
+                <p class="account-kicker">Profile</p>
+                <h1 class="account-title">Edit your profile</h1>
+            </div>
+
+            <div class="account-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">{{ form.first_name.label_tag }} {{ form.first_name }}</div>
+                        <div class="col-md-6">{{ form.last_name.label_tag }} {{ form.last_name }}</div>
+                        <div class="col-md-6">{{ form.mobile_number.label_tag }} {{ form.mobile_number }}</div>
+                        <div class="col-md-6">{{ form.date_of_birth.label_tag }} {{ form.date_of_birth }}</div>
+                        <div class="col-12">{{ form.address.label_tag }} {{ form.address }}</div>
+                        <div class="col-md-6">{{ form.postcode.label_tag }} {{ form.postcode }}</div>
+                        <div class="col-12">{{ form.bio.label_tag }} {{ form.bio }}</div>
+                        <div class="col-12">{{ form.profile_image.label_tag }} {{ form.profile_image }}</div>
+                    </div>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger mt-3">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="account-actions mt-4 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary account-button">Save changes</button>
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary account-button">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

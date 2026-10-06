@@ -29,7 +29,9 @@
 
                     <div class="hero-actions">
                         {% if user.is_authenticated %}
-                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary cms-btn">Go to dashboard</a>
+                            {% if user.is_staff or user.is_superuser %}
+                                <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary cms-btn">Go to dashboard</a>
+                            {% endif %}
                             <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary cms-btn">View profile</a>
                         {% else %}
                             <a href="{% url 'accounts:signup' %}" class="btn btn-primary cms-btn">Create account</a>

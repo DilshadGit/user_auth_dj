@@ -13,7 +13,11 @@
 
             <div class="account-body">
                 <div class="account-summary">
-                    <div class="account-avatar">{{ user.first_name|default:user.email|slice:":1"|upper }}</div>
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="Profile image" class="account-avatar" style="object-fit:cover;">
+                    {% else %}
+                        <div class="account-avatar">{{ user.first_name|default:user.email|slice:":1"|upper }}</div>
+                    {% endif %}
                     <div>
                         <span class="account-label">Email</span>
                         <h3>{{ user.email }}</h3>
@@ -34,6 +38,26 @@
                         <strong>{{ user.mobile_number|default:"Not provided" }}</strong>
                     </div>
                     <div class="account-info">
+                        <span class="account-label">Date of birth</span>
+                        <strong>{{ user.date_of_birth|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Barcode number</span>
+                        <strong>{{ user.barcode_number|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Address</span>
+                        <strong>{{ user.address|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Postcode</span>
+                        <strong>{{ user.postcode|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Role</span>
+                        <strong>{{ user.role_label }}</strong>
+                    </div>
+                    <div class="account-info">
                         <span class="account-label">Last login</span>
                         <strong>{{ user.last_login|default:"Never" }}</strong>
                     </div>
@@ -49,10 +73,11 @@
                         <span class="account-label">Member since</span>
                         <strong>{{ user.date_joined|date:"M d, Y" }}</strong>
                     </div>
-                    <div class="account-info">
-                        <span class="account-label">Access</span>
-                        <strong>Dashboard</strong>
-                    </div>
+                </div>
+
+                <div class="account-actions mt-4 d-flex gap-2 flex-wrap">
+                    <a href="{% url 'accounts:profile_update' %}" class="btn btn-primary account-button">Edit profile</a>
+                    <a href="{% url 'accounts:profile_delete' %}" class="btn btn-outline-danger account-button">Delete account</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+<main class="account-shell">
+    <div class="container">
+        <div class="account-card">
+            <div class="account-header">
+                <p class="account-kicker">Security check</p>
+                <h1 class="account-title">User details</h1>
+            </div>
+
+            <div class="account-body">
+                <div class="account-summary">
+                    {% if user_detail.profile_image %}
+                        <img src="{{ user_detail.profile_image.url }}" alt="Profile image" class="account-avatar" style="object-fit:cover;">
+                    {% else %}
+                        <div class="account-avatar">{{ user_detail.first_name|default:user_detail.email|slice:":1"|upper }}</div>
+                    {% endif %}
+                    <div>
+                        <span class="account-label">Email</span>
+                        <h3>{{ user_detail.email }}</h3>
+                    </div>
+                </div>
+
+                <div class="account-grid">
+                    <div class="account-info"><span class="account-label">Full name</span><strong>{{ user_detail.first_name|default:'Not provided' }} {{ user_detail.last_name|default:'' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Mobile number</span><strong>{{ user_detail.mobile_number|default:'Not provided' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Date of birth</span><strong>{{ user_detail.date_of_birth|default:'Not provided' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Barcode</span><strong>{{ user_detail.barcode_number|default:'Not provided' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Address</span><strong>{{ user_detail.address|default:'Not provided' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Postcode</span><strong>{{ user_detail.postcode|default:'Not provided' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Role</span><strong>{{ user_detail.role_label }}</strong></div>
+                    <div class="account-info"><span class="account-label">Registration status</span>
+                        {% if user_detail.is_active %}
+                            <strong><span class="badge bg-success">Registered</span></strong>
+                        {% else %}
+                            <strong><span class="badge bg-danger">Blocked</span></strong>
+                        {% endif %}
+                    </div>
+                    <div class="account-info"><span class="account-label">Last login</span><strong>{{ user_detail.last_login|default:'Never' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Last logout</span><strong>{{ user_detail.last_logout_at|default:'Not available' }}</strong></div>
+                    <div class="account-info"><span class="account-label">Last IP</span><strong>{{ user_detail.last_login_ip|default:'Unknown' }}</strong></div>
+                </div>
+
+                {% if can_manage_user %}
+                    <div class="account-actions mt-3 d-flex gap-2 flex-wrap">
+                        <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary account-button">Back to dashboard</a>
+                        {% if user_detail.pk != request.user.pk %}
+                            <form method="post" action="{% url 'accounts:block_user' user_detail.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn {% if user_detail.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} account-button">
+                                    {% if user_detail.is_active %}Block user{% else %}Unblock user{% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="account-actions mt-3">
+                        <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary account-button">Back to dashboard</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

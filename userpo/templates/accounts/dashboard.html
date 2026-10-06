@@ -10,19 +10,24 @@
             <h1 class="cms-title">Dashboard</h1>
         </div>
 
-        <div class="row g-4 mb-4">
-            <div class="col-lg-8">
+        <div class="row g-4 mb-4 align-items-stretch">
+            <div class="col-12">
                 <div class="cms-card basic-panel">
-                    <h3>Welcome back</h3>
-                    <p class="mb-0">You are logged in and ready to review account access and user activity.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="cms-card summary-panel">
-                    <span class="stat-label">Account</span>
-                    <h3>{{ user.email|default:'User' }}</h3>
-                    <p class="mb-0">Role: {{ user.role_label }}</p>
+                    <form method="get" action="" class="d-flex gap-2 align-items-center flex-wrap">
+                        <label for="user-search" class="fw-semibold mb-0">Search users</label>
+                        <input
+                            id="user-search"
+                            type="text"
+                            name="q"
+                            value="{{ search_query }}"
+                            class="form-control"
+                            placeholder="Search by email, name, mobile, barcode"
+                        >
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        {% if search_query %}
+                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary">Clear</a>
+                        {% endif %}
+                    </form>
                 </div>
             </div>
         </div>
@@ -60,6 +65,7 @@
                         <tr>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Last login</th>
                             <th>Last logout</th>
                         </tr>
@@ -67,7 +73,9 @@
                     <tbody>
                         {% for item in page_obj %}
                             <tr>
-                                <td>{{ item.email }}</td>
+                                <td>
+                                    <a href="{% url 'accounts:user_detail' item.pk %}">{{ item.email }}</a>
+                                </td>
                                 <td>
                                     {% if item.is_superuser %}
                                         <span class="badge bg-danger">Admin</span>
@@ -77,12 +85,19 @@
                                         <span class="badge bg-secondary">Member</span>
                                     {% endif %}
                                 </td>
+                                <td>
+                                    {% if item.is_active %}
+                                        <span class="badge bg-success">Registered</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Blocked</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ item.last_login|default:'Never' }}</td>
                                 <td>{{ item.last_logout_at|default:'Not available' }}</td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">No users found.</td>
+                                <td colspan="5" class="text-center text-muted py-4">No users found.</td>
                             </tr>
                         {% endfor %}
                     </tbody>

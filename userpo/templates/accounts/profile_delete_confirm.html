@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Delete account{% endblock %}
+
+{% block content %}
+<main class="account-shell">
+    <div class="container">
+        <div class="account-card">
+            <div class="account-header">
+                <p class="account-kicker">Account</p>
+                <h1 class="account-title">Delete your account</h1>
+            </div>
+
+            <div class="account-body">
+                <p class="mb-3">This action will permanently delete your profile and all related account data.</p>
+                <p class="fw-semibold mb-4">Are you sure you want to continue?</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="account-actions d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-danger account-button">Yes, delete my account</button>
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary account-button">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

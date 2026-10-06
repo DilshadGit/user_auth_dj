@@ -19,14 +19,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
-
+from accounts.views import AdminDocsView
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # custom accounts app URLs
     path('accounts/', include('allauth.urls')),
-    path('', TemplateView.as_view(template_name='base.html'), name='home'),
+    path('docs/', AdminDocsView.as_view(), name='docs_index'),
+    path('docs/<str:filename>/', AdminDocsView.as_view(), name='docs_file'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 
 if settings.DEBUG:

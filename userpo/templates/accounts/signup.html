@@ -84,6 +84,22 @@
                         {% endif %}
                     </div>
 
+                    <div class="mb-3 text-center">
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.date_of_birth.label }}</label>
+                        {{ form.date_of_birth }}
+                        {% if form.date_of_birth.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.date_of_birth.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <label for="{{ form.barcode_number.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.barcode_number.label }}</label>
+                        {{ form.barcode_number }}
+                        {% if form.barcode_number.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.barcode_number.errors }}</div>
+                        {% endif %}
+                    </div>
+
                     <button class="btn btn-primary w-100" type="submit">Continue with email</button>
 
                     <div class="text-center mt-3 small">

@@ -1,0 +1,15 @@
+{
+  "include": ["./"],
+  "exclude": [
+    "**/migrations",
+    "**/staticfiles",
+    "**/media",
+    "**/__pycache__"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none",
+  "pythonVersion": "3.13",
+  "venvPath": ".venv",
+  "venv": "us"
+}
