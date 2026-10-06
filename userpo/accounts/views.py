@@ -1,5 +1,8 @@
+import html
+import re
 from pathlib import Path
 
+import markdown
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
@@ -196,31 +199,86 @@ class AdminDocsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def test_func(self):
         return self.request.user.is_superuser
 
+    def _docs_root(self):
+        return Path(settings.BASE_DIR) / 'docs'
+
+    def _safe_path(self, relative_path: str | None):
+        docs_root = self._docs_root()
+        if not relative_path:
+            return docs_root
+        candidate = (docs_root / relative_path).resolve()
+        docs_root_resolved = docs_root.resolve()
+        if docs_root_resolved not in candidate.parents and candidate != docs_root_resolved:
+            return None
+        return candidate
+
+    def _doc_listing(self, folder_path: Path):
+        files = []
+        if not folder_path.exists() or not folder_path.is_dir():
+            return files
+
+        for child in sorted(folder_path.iterdir(), key=lambda p: (0 if p.is_dir() else 1, p.name.lower())):
+            rel_path = child.relative_to(self._docs_root()).as_posix()
+            files.append({
+                'name': child.name,
+                'path': rel_path,
+                'size': child.stat().st_size if child.is_file() else None,
+                'is_dir': child.is_dir(),
+            })
+        return files
+
     def get(self, request, *args, **kwargs):
         filename = kwargs.get('filename')
-        if filename:
-            docs_dir = Path(settings.BASE_DIR) / 'docs'
-            file_path = docs_dir / filename
-            if file_path.exists() and file_path.is_file() and request.user.is_superuser:
-                context = self.get_context_data(**kwargs)
-                context['selected_file'] = filename
-                context['selected_content'] = file_path.read_text(encoding='utf-8', errors='replace')
-                return render(request, self.template_name, context)
+        docs_root = self._docs_root()
+
+        if not filename:
+            context = self.get_context_data()
+            context['docs_files'] = self._doc_listing(docs_root)
+            context['current_path'] = ''
+            return render(request, self.template_name, context)
+
+        safe_target = self._safe_path(filename)
+        if safe_target is None or not safe_target.exists():
             return HttpResponseForbidden('You are not allowed to view this document.')
-        return super().get(request, *args, **kwargs)
+
+        context = self.get_context_data(**kwargs)
+        context['current_path'] = filename
+        context['docs_files'] = self._doc_listing(safe_target if safe_target.is_dir() else safe_target.parent)
+
+        if safe_target.is_dir():
+            context['selected_file'] = None
+            context['selected_content'] = ''
+            return render(request, self.template_name, context)
+
+        if safe_target.is_file():
+            context['selected_file'] = filename
+            raw_content = safe_target.read_text(encoding='utf-8', errors='replace')
+
+            if safe_target.suffix.lower() == '.md':
+                rendered_html = markdown.markdown(
+                    raw_content,
+                    extensions=['extra', 'fenced_code', 'tables', 'sane_lists', 'toc']
+                )
+                rendered_html = re.sub(
+                    r'<pre><code class="language-mermaid">(.*?)</code></pre>',
+                    lambda match: f'<pre class="mermaid">{html.escape(match.group(1))}</pre>',
+                    rendered_html,
+                    flags=re.DOTALL,
+                )
+                context['selected_content'] = rendered_html
+            else:
+                context['selected_content'] = html.escape(raw_content)
+
+            return render(request, self.template_name, context)
+
+        return HttpResponseForbidden('You are not allowed to view this document.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        docs_dir = Path(settings.BASE_DIR) / 'docs'
-        files = []
-        if docs_dir.exists():
-            for file_path in sorted(docs_dir.iterdir(), key=lambda p: p.name.lower()):
-                if file_path.is_file():
-                    files.append({
-                        'name': file_path.name,
-                        'size': file_path.stat().st_size,
-                    })
-        context['docs_files'] = files
+        context['docs_files'] = self._doc_listing(self._docs_root())
+        context['current_path'] = ''
+        context['selected_file'] = None
+        context['selected_content'] = ''
         return context
 
 

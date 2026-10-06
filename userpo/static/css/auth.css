@@ -512,6 +512,9 @@ body {
 .doc-list {
     display: grid;
     gap: 0.75rem;
+    max-height: 68vh;
+    overflow-y: auto;
+    padding-right: 0.25rem;
 }
 
 .doc-item {
@@ -526,6 +529,7 @@ body {
     color: #0f172a;
     text-decoration: none;
     transition: all 0.2s ease;
+    overflow-wrap: anywhere;
 }
 
 .doc-item:hover,
@@ -538,11 +542,45 @@ body {
 .doc-name {
     font-weight: 700;
     word-break: break-word;
+    overflow-wrap: anywhere;
+    flex: 1;
 }
 
 .doc-meta {
     color: #64748b;
     white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.crumbs-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #475569;
+    word-break: break-word;
+}
+
+.crumb-link,
+.crumb-part {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.crumb-separator {
+    color: #94a3b8;
+}
+
+.viewer-title-wrap {
+    min-width: 0;
+}
+
+.doc-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .doc-viewer {
@@ -555,13 +593,61 @@ body {
     background: #f8fafc;
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 12px;
-    white-space: pre-wrap;
+    white-space: normal;
     word-break: break-word;
+    overflow-wrap: anywhere;
     font-size: 0.95rem;
     line-height: 1.8;
     color: #0f172a;
-    max-height: 520px;
+    max-height: 70vh;
     overflow: auto;
+}
+
+.doc-content h1,
+.doc-content h2,
+.doc-content h3,
+.doc-content h4,
+.doc-content h5,
+.doc-content h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: #111827;
+    line-height: 1.25;
+}
+
+.doc-content p,
+.doc-content ul,
+.doc-content ol,
+.doc-content blockquote,
+.doc-content pre,
+.doc-content table {
+    margin-bottom: 1rem;
+}
+
+.doc-content code {
+    background: #eef2ff;
+    border-radius: 6px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.9em;
+}
+
+.doc-content pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+.doc-content .mermaid {
+    display: block;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    overflow-x: auto;
 }
 
 .empty-doc-panel {

@@ -181,6 +181,14 @@ class DashboardAccessTests(TestCase):
         docs_response = self.client.get(reverse('docs_index'))
         self.assertEqual(docs_response.status_code, 200)
 
+        nested_dir_response = self.client.get('/docs/db/')
+        self.assertEqual(nested_dir_response.status_code, 200)
+        self.assertContains(nested_dir_response, 'FINAL_AUTH_PROJECT_STATUS_AND_FIX_LOG.md')
+
+        file_response = self.client.get('/docs/db/FINAL_AUTH_PROJECT_STATUS_AND_FIX_LOG.md/')
+        self.assertEqual(file_response.status_code, 200)
+        self.assertContains(file_response, 'FINAL AUTH')
+
         search_response = self.client.get(reverse('accounts:dashboard'), {'q': 'Aisha'})
         self.assertEqual(search_response.status_code, 200)
         self.assertContains(search_response, 'Aisha')

@@ -27,7 +27,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # custom accounts app URLs
     path('accounts/', include('allauth.urls')),
     path('docs/', AdminDocsView.as_view(), name='docs_index'),
-    path('docs/<str:filename>/', AdminDocsView.as_view(), name='docs_file'),
+    path('docs/<path:filename>/', AdminDocsView.as_view(), name='docs_file'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 

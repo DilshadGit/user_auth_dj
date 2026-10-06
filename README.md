@@ -1,57 +1,196 @@
-# user_auth_dj'''
-    Absolutely. I can walk you through a production-minded Django 5.2 authentication system from an empty project to a complete login/register/logout/password-reset setup, including the packages, files, settings, URLs, templates, forms, security, and testing.
-'''
+# User Authentication Django Project
 
-I’ll assume:
+A secure Django 5.2 authentication system with a custom email-based user model, role-based access control, reset flows, profile management, audit logging, and Docker-ready deployment support.
 
-Python 3.12+
+## Project overview
 
-Django 5.2
+This project includes:
 
-SQLite for development
+- Custom user model using email as the login field
+- Sign up, login, logout, and profile management
+- Password change and password reset flows
+- Role-based access for admin, staff, and member users
+- Dashboard access restrictions for staff/admin only
+- Soft-delete-safe account handling with history preservation
+- Brute-force protection with django-axes
+- PostgreSQL-ready configuration with SQLite fallback for local dev
+- Docker and Nginx support for local deployment
+- Documentation and production safety guidance
 
-Django’s built-in authentication system
+## Key project structure
 
-HTML templates (no React/API initially)
+```text
+user_auth_dj/
+├── Dockerfile
+├── docker-compose.yml
+├── README.md
+├── requirements.txt
+├── nginx/
+│   └── default.conf
+├── userpo/
+│   ├── manage.py
+│   ├── .env
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── wsgi.py
+│   │   └── asgi.py
+│   ├── accounts/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── backends.py
+│   │   ├── forms.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── templates/
+│   ├── templates/
+│   └── docs/
+├── media/
+├── staticfiles/
+└── .venv/
+```
 
-A custom user model from the beginning, so you can extend it later without painful migrations
+## Prerequisites
 
-We’ll build it in stages:
+- Python 3.12+
+- pip
+- Virtual environment support
+- Docker and Docker Compose for containerized deployment
 
-Create the virtual environment
+## Local setup
 
-Install Django and required packages
+From the project root:
 
-Create the project and authentication app
+```bash
+cd /home/monika/PycharmProjects/Devel/user_auth_dj
+python3 -m venv .venv/us
+source .venv/us/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-Configure a custom User model
+Then start the Django project from the app folder:
 
-Configure settings
+```bash
+cd userpo
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
+```
 
-Create registration
+If you need a local admin user:
 
-Create login/logout
+```bash
+python manage.py createsuperuser
+```
 
-Add protected pages and @login_required
+The project also includes a seeded admin account already present in the local database for validation:
 
-Add email verification
+- Email: dilshad.a73@gmail.com
+- Password: AdminPass!2026
 
-Add password change
+## Environment configuration
 
-Add password reset via email
+The app reads settings from `userpo/.env`.
 
-Add profile functionality
+Example values:
 
-Add authentication security settings
+```env
+DJANGO_SECRET_KEY=change-this-to-a-long-random-secret-key
+DJANGO_DEBUG=1
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0,testserver
 
-Add messages and form validation
+EMAIL_BACKEND=django.core.mail.backends.locmem.EmailBackend
+DEFAULT_FROM_EMAIL=noreply@example.com
+```
 
-Write authentication tests
+The project uses SQLite by default for local development; PostgreSQL is enabled automatically when the database environment variables are set.
 
-Prepare it for production
+## Authentication behaviour
 
-Explain the complete project structure
+The app uses a custom email backend and custom login form so users log in by email rather than username.
 
-I’ll give you the exact commands and complete files, rather than assuming you already know Django.
+### Roles
+
+- Admin: full dashboard and user management access
+- Staff: dashboard access and restricted management permissions
+- Member: profile access only
+
+### Security features
+
+- `django-axes` for brute-force protection
+- `AXES_RESET_ON_SUCCESS = True`
+- `LOGIN_URL` and protected routes enforced via `LoginRequiredMixin`
+- Dashboard access restricted to staff/admin users only
+- Profile updates are logged for audit review
+- Soft-delete patterns keep historical data intact rather than deleting records outright
+
+## Password and reset flows
+
+The app includes:
+
+- Sign up
+- Login
+- Logout
+- Password change
+- Password reset request
+- Password reset confirmation
+- Password reset completion
+
+Reset emails are configured to work in local dev via console email backend before production SMTP is enabled.
+
+## Docker workflow
+
+From the root directory:
+
+```bash
+docker compose up --build
+```
+
+The compose file provisions:
+
+- PostgreSQL service
+- Django web service
+- Nginx reverse proxy
+
+The app is exposed on:
+
+- Django: http://localhost:8000
+- Nginx: http://localhost:8080
+
+## Testing
+
+Run the project tests from `userpo/`:
+
+```bash
+python manage.py test accounts
+```
+
+The app has also been validated with live Django test-client login checks against the stored admin credentials.
+
+## Production notes
+
+For production deployment, the project should be moved to secure configuration:
+
+- Use PostgreSQL instead of SQLite
+- Set strong secret keys and environment variables
+- Restrict `ALLOWED_HOSTS`
+- Turn on HTTPS and TLS
+- Use production email backend and SMTP credentials
+- Keep audit history and soft-delete accounting intact
+- Review the docs in `userpo/docs/` before deployment
+
+## Project documentation
+
+Additional implementation and deployment documentation is available under:
+
+- `userpo/docs/START_UP.md`
+- `userpo/docs/PRODUCTION_AUTH_SECURITY_RECOMMENDATION_PROCESS.md`
+- `userpo/docs/AXES_LOCKOUT_TROUBLESHOOTING_AND_SECURITY_VALIDATION.md`
+- `userpo/docs/NGINX_GUNICORN_DOCKER_DEPLOYMENT_GUIDE.md`
+
+## Final status
+
+This repository delivers the requested Django authentication project as a working implementation with custom user management, secure flows, access control, audit logging, Docker support, and deployment guidance.
 
 

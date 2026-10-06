@@ -15,20 +15,35 @@
                 <div class="cms-card panel-card">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                         <h3>Project documents</h3>
-                        <span class="mini-badge">{{ docs_files|length }} Files</span>
+                        <span class="mini-badge">{{ docs_files|length }} items</span>
                     </div>
+
+                    {% if current_path %}
+                        <div class="crumbs-wrap mb-3">
+                            <a href="{% url 'docs_index' %}" class="crumb-link">docs/</a>
+                            <span class="crumb-separator">/</span>
+                            <span class="crumb-part">{{ current_path }}</span>
+                        </div>
+                    {% endif %}
 
                     {% if docs_files %}
                         <div class="doc-list">
                             {% for doc in docs_files %}
-                                <a href="{% url 'docs_file' filename=doc.name %}" class="doc-item {% if selected_file == doc.name %}active{% endif %}">
-                                    <span class="doc-name">{{ doc.name }}</span>
-                                    <small class="doc-meta">{{ doc.size }} bytes</small>
-                                </a>
+                                {% if doc.is_dir %}
+                                    <a href="{% url 'docs_file' filename=doc.path %}" class="doc-item directory-item {% if selected_file == doc.path %}active{% endif %}">
+                                        <span class="doc-name">📁 {{ doc.name }}</span>
+                                        <small class="doc-meta">folder</small>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'docs_file' filename=doc.path %}" class="doc-item file-item {% if selected_file == doc.path %}active{% endif %}">
+                                        <span class="doc-name">{{ doc.name }}</span>
+                                        <small class="doc-meta">{{ doc.size }} bytes</small>
+                                    </a>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p class="text-muted mb-0">No documents found in the docs folder.</p>
+                        <p class="text-muted mb-0">No documents found in this folder.</p>
                     {% endif %}
                 </div>
             </div>
@@ -37,14 +52,32 @@
                 {% if selected_file %}
                     <div class="cms-card doc-viewer">
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                            <div>
+                            <div class="viewer-title-wrap">
                                 <p class="cms-kicker">Preview</p>
-                                <h3 class="mb-0">{{ selected_file }}</h3>
+                                <h3 class="mb-0 doc-title">{{ selected_file }}</h3>
                             </div>
                             <a href="{% url 'docs_index' %}" class="btn btn-outline-secondary btn-sm">Back to docs</a>
                         </div>
-                        <pre class="doc-content">{{ selected_content }}</pre>
+                        <div class="doc-content markdown-body">
+                            {{ selected_content|safe }}
+                        </div>
                     </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            if (window.mermaid) {
+                                mermaid.initialize({
+                                    startOnLoad: false,
+                                    securityLevel: 'loose',
+                                    theme: 'default'
+                                });
+                                mermaid.run({
+                                    nodes: document.querySelectorAll('.mermaid')
+                                });
+                            }
+                        });
+                    </script>
                 {% else %}
                     <div class="cms-card empty-doc-panel">
                         <p class="mb-0 text-muted">Select a file from the list to view it here in a readable layout.</p>
