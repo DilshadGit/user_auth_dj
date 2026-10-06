@@ -32,9 +32,11 @@ A project-level config was placed at the workspace root:
 
 This ensures the editor uses the correct venv and suppresses the noisy missing-import warnings for packages already installed in the actual project environment.
 
-### 4. `environ` usage was converted to the safer `os.environ.get` pattern
+### 4. Safe environment access was kept in place
 
-The `.env` file is still being loaded with `environ.Env().read_env(...)`, but the app values are read through `os.environ.get(...)` so the project stays secure and avoids the strict typing overloads from the `environ` stub definitions.
+The project loads the `.env` file through a small local helper in `config/settings.py`, and the app values are then read through `os.environ.get(...)` so the project stays secure while avoiding the strict typing noise from third-party environment stubs.
+
+This keeps the environment-loading pattern explicit and stable without depending on the `environ` typing layer that was creating editor noise.
 
 ## Why this happened
 
@@ -43,7 +45,7 @@ The main issue was not a broken Django logic flow. It was a static analysis prob
 - Django model fields being descriptors rather than plain Python values
 - Pylance strict checks on annotations
 - the static checker not being pointed at the actual workspace root
-- the `environ` package typing stubs not working cleanly with keyword defaults
+- the environment-loading pattern relying on type-heavy helpers that did not match the project’s actual runtime setup
 
 ## Result
 

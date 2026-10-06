@@ -260,8 +260,14 @@ class AdminDocsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     extensions=['extra', 'fenced_code', 'tables', 'sane_lists', 'toc']
                 )
                 rendered_html = re.sub(
-                    r'<pre><code class="language-mermaid">(.*?)</code></pre>',
-                    lambda match: f'<pre class="mermaid">{html.escape(match.group(1))}</pre>',
+                    r'<pre(?: class="mermaid")?>\s*<code class="language-mermaid">(.*?)</code>\s*</pre>',
+                    lambda match: '<div class="mermaid">' + html.unescape(match.group(1)) + '</div>',
+                    rendered_html,
+                    flags=re.DOTALL,
+                )
+                rendered_html = re.sub(
+                    r'<pre class="mermaid">(.*?)</pre>',
+                    lambda match: '<div class="mermaid">' + html.unescape(match.group(1)) + '</div>',
                     rendered_html,
                     flags=re.DOTALL,
                 )

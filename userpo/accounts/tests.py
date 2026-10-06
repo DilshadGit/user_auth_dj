@@ -199,3 +199,12 @@ class DashboardAccessTests(TestCase):
         self.assertContains(detail_response, 'Aisha')
         self.assertContains(detail_response, 'BC-123')
         self.assertContains(detail_response, 'AB12 3CD')
+
+    def test_mermaid_block_is_rendered_as_browser_valid_div(self):
+        self.client.force_login(self.admin)
+        response = self.client.get('/docs/USER_AUTHENTICATION_FLOWCHART.md/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div class="mermaid">')
+        self.assertContains(response, 'flowchart LR')
+        self.assertNotContains(response, '<pre><code class="language-mermaid">')
