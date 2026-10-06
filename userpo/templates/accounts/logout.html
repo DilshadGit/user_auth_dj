@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Logout{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h2>Logout</h2>
+        <p>Hello, {{ user.email }}!</p>
+    {% endif %}
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, Logout</button>
+    </form>
+{% endblock %}

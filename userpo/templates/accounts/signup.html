@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    <main class="d-flex align-items-center justify-content-center min-vh-100 bg-body-tertiary">
+        <div class="card shadow-sm border-0" style="width: 420px; border-radius: 18px;">
+            <div class="card-body p-4 p-xl-5">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success" style="width: 56px; height: 56px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 2.5c-2.5 0-4.5 1.5-4.5 3.5v.5h9v-.5c0-2-2-3.5-4.5-3.5Z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <h1 class="fs-4 fw-semibold text-center mb-4">Sign Up</h1>
+
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-outline-secondary" type="button"><i class="bi bi-google me-2"></i>Continue with Google</button>
+                    <button class="btn btn-outline-secondary" type="button"><i class="bi bi-github me-2"></i>Continue with GitHub</button>
+                    <button class="btn btn-outline-secondary" type="button"><i class="bi bi-microsoft me-2"></i>Continue with Microsoft</button>
+                </div>
+
+                <div class="d-flex align-items-center my-3">
+                    <hr class="flex-grow-1"><span class="px-2 small text-body-secondary">or</span><hr class="flex-grow-1">
+                </div>
+
+                <form action="{% url 'accounts:signup' %}" method="post" class="needs-validation mx-auto" novalidate style="max-width: 320px;">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger small mb-3 text-center">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3 text-center">
+                        <label for="{{ form.email.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.password1.label }}</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.password2.label }}</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button class="btn btn-primary w-100" type="submit">Continue with email</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
