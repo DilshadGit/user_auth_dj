@@ -3,12 +3,28 @@
 {% block title %}Logout{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <h2>Logout</h2>
-        <p>Hello, {{ user.email }}!</p>
-    {% endif %}
-    <form action="{% url 'accounts:logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Yes, Logout</button>
-    </form>
+<main class="account-shell">
+    <div class="container">
+        <div class="account-card">
+            <div class="account-header">
+                <p class="account-kicker">Session</p>
+                <h1 class="account-title">Logout</h1>
+            </div>
+
+            <div class="account-body">
+                <div class="account-message">
+                    Are you sure you want to sign out from <strong>{{ user.email }}</strong>?
+                </div>
+
+                <form method="post" action="{% url 'accounts:logout' %}" class="account-form">
+                    {% csrf_token %}
+                    <div class="account-actions">
+                        <button type="submit" class="btn btn-primary account-button">Yes, logout</button>
+                        <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary account-button">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

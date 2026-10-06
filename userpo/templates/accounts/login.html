@@ -36,10 +36,10 @@
                     {% endif %}
 
                     <div class="mb-3 text-center">
-                        <label for="{{ form.email.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.email.label }}</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="text-danger small mt-1 text-center">{{ form.email.errors }}</div>
+                        <label for="{{ form.username.id_for_label }}" class="form-label d-block w-100 text-center">{{ form.username.label }}</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.username.errors }}</div>
                         {% endif %}
                     </div>
 
@@ -52,6 +52,14 @@
                     </div>
 
                     <button class="btn btn-primary w-100" type="submit">Login</button>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'accounts:password_reset' %}" class="small text-decoration-none">Forgot password?</a>
+                    </div>
+
+                    <div class="text-center mt-3 small">
+                        Need an account? <a href="{% url 'accounts:signup' %}" class="text-decoration-none">Sign up</a>
+                    </div>
                 </form>
             </div>
         </div>

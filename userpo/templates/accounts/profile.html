@@ -3,6 +3,59 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-    <h2>Profile</h2>
-    <p>Welcome, {{ user.username }}!</p>
+<main class="account-shell">
+    <div class="container">
+        <div class="account-card">
+            <div class="account-header">
+                <p class="account-kicker">Account</p>
+                <h1 class="account-title">Profile</h1>
+            </div>
+
+            <div class="account-body">
+                <div class="account-summary">
+                    <div class="account-avatar">{{ user.first_name|default:user.email|slice:":1"|upper }}</div>
+                    <div>
+                        <span class="account-label">Email</span>
+                        <h3>{{ user.email }}</h3>
+                    </div>
+                </div>
+
+                <div class="account-grid">
+                    <div class="account-info">
+                        <span class="account-label">First name</span>
+                        <strong>{{ user.first_name|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Last name</span>
+                        <strong>{{ user.last_name|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Mobile number</span>
+                        <strong>{{ user.mobile_number|default:"Not provided" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Last login</span>
+                        <strong>{{ user.last_login|default:"Never" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Last logout</span>
+                        <strong>{{ user.last_logout_at|default:"Not available" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Last IP</span>
+                        <strong>{{ user.last_login_ip|default:"Unknown" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Member since</span>
+                        <strong>{{ user.date_joined|date:"M d, Y" }}</strong>
+                    </div>
+                    <div class="account-info">
+                        <span class="account-label">Access</span>
+                        <strong>Dashboard</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

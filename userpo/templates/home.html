@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<main class="cms-shell">
+    <div class="container">
+        <section class="cms-hero">
+            <div class="hero-grid">
+                <div class="hero-panel">
+                    <span class="cms-badge">
+                        <i class="bi bi-shield-check"></i>
+                        Secure access
+                    </span>
+
+                    {% if user.is_authenticated %}
+                        <h1>Welcome back, {{ user.first_name|default:user.email|slice:":1"|upper }}.</h1>
+                        <p>
+                            Your account is ready. Review your profile, update security settings,
+                            and keep your data protected with a clean, simple dashboard experience.
+                        </p>
+                    {% else %}
+                        <h1>Authentication that feels safe, simple, and professional.</h1>
+                        <p>
+                            AccountCMS gives you registration, email-based login, password reset,
+                            and a clean user dashboard designed for modern web apps and secure access workflows.
+                        </p>
+                    {% endif %}
+
+                    <div class="hero-actions">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary cms-btn">Go to dashboard</a>
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary cms-btn">View profile</a>
+                        {% else %}
+                            <a href="{% url 'accounts:signup' %}" class="btn btn-primary cms-btn">Create account</a>
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary cms-btn">Sign in</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="hero-side">
+                    <div class="summary-card">
+                        <h3>Quick overview</h3>
+                        <div class="summary-stats">
+                            <div class="summary-stat">
+                                <span class="stat-label">User model</span>
+                                <strong>Email-first</strong>
+                            </div>
+                            <div class="summary-stat">
+                                <span class="stat-label">Forms</span>
+                                <strong>Aligned</strong>
+                            </div>
+                            <div class="summary-stat">
+                                <span class="stat-label">Security</span>
+                                <strong>Protected</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <h3>Current status</h3>
+                        <div class="summary-stats">
+                            <div class="summary-stat">
+                                <span class="stat-label">Login</span>
+                                <strong>Email + password</strong>
+                            </div>
+                            <div class="summary-stat">
+                                <span class="stat-label">Reset</span>
+                                <strong>Password recovery</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
+                <h3>Profile-ready users</h3>
+                <p>
+                    Personal details like first name, last name, and mobile number are part of the model
+                    and matched by the signup form so the experience stays consistent.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-key"></i></div>
+                <h3>Secure auth flow</h3>
+                <p>
+                    The app supports email authentication, password change, and password reset requests
+                    for a profile-friendly and secure user journey.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-speedometer2"></i></div>
+                <h3>Clean dashboard</h3>
+                <p>
+                    The dashboard and profile views are framed for a modern admin or account management layout
+                    without overwhelming the user.
+                </p>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}

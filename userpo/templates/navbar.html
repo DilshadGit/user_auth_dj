@@ -1,43 +1,53 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Account</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>        
-    </ul>
-    <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-    
-    <div class="dropdown" style="margin-left: 10px; position: relative;">
-        <li class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-            User
-        </li>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            {% if user.is_authenticated %}
-                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
-                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
-            {% else %}
-                <li><a class="dropdown-item" href="{% url 'accounts:login' %}">Login</a></li>
-                <li><a class="dropdown-item" href="{% url 'accounts:signup' %}">Sign Up</a></li>
-            {% endif %}
-            
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Docs</a></li>
-        </ul>
-    </div>
+<nav class="navbar navbar-expand-lg cms-navbar">
+  <div class="container">
+    <div class="navbar-inner d-flex align-items-center justify-content-between w-100">
+      <a class="navbar-brand cms-brand" href="{% url 'home' %}">AccountCMS</a>
 
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cmsNavbar" aria-controls="cmsNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-center" id="cmsNavbar">
+        <ul class="navbar-nav align-items-center gap-lg-3">
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:password_change' %}">Security</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="dropdown cms-user-menu">
+        <button class="btn btn-light dropdown-toggle cms-user-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          {% if user.is_authenticated %}
+            {{ user.email|default:"User" }}
+          {% else %}
+            Account
+          {% endif %}
+        </button>
+        {% if user.is_authenticated %}
+          <ul class="dropdown-menu dropdown-menu-end cms-account-menu">
+            <li class="dropdown-header cms-account-email">{{ user.email|default:"User" }}</li>
+            <li><a class="dropdown-item cms-account-link" href="{% url 'accounts:profile' %}">View profile</a></li>
+            <li><a class="dropdown-item cms-account-link" href="{% url 'accounts:password_change' %}">Change password</a></li>
+            <li><a class="dropdown-item cms-account-link danger-link" href="{% url 'accounts:logout' %}">Logout</a></li>
+          </ul>
+        {% else %}
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'accounts:login' %}">Login</a></li>
+            <li><a class="dropdown-item" href="{% url 'accounts:signup' %}">Sign Up</a></li>
+          </ul>
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>
